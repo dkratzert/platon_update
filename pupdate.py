@@ -15,16 +15,16 @@ timestr = time.strftime("%Y%m%d")
 u = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/mswindows/platon/platon.zip')
 
 
-File = 'platon-%s.zip' %timestr
+#File = 'platon-%s.zip' %timestr
 #print '%20s  %s' % (File, zipfile.is_zipfile(File))
 
-localFile = open(File, 'wb')
+localFile = os.tmpfile()
 localFile.write(u.read())
-localFile.close()
+#localFile.close()
 
-zf = zipfile.ZipFile(File, 'r')
+zf = zipfile.ZipFile(localFile, 'r')
 
-list = zf.namelist()
+list = zf.namelist()  #list of files in the zipfile
 #print list
 
 for name in list:
@@ -34,5 +34,4 @@ for name in list:
 	print 'extracting', name
 	fd.close()
 
-
-
+#os.remove(File)
