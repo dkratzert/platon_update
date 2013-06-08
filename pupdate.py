@@ -8,6 +8,7 @@
 import urllib2
 import time
 import os
+import tempfile
 import zipfile
 
 timestr = time.strftime("%Y%m%d")
@@ -18,7 +19,7 @@ u = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/mswindows/platon/
 #File = 'platon-%s.zip' %timestr
 #print '%20s  %s' % (File, zipfile.is_zipfile(File))
 
-localFile = os.tmpfile()
+localFile = tempfile.TemporaryFile()
 localFile.write(u.read())
 #localFile.close()
 
