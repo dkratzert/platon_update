@@ -1,7 +1,7 @@
 #/usr/bin/env python
 #-*- encoding: utf-8 -*-
 #möp
-# this script updates the shelx-2013 in the c:\bn\sxtl directory
+# this script updates the shelt-2013 in the c:\bn\sxtl directory
 
 import urllib2
 import os
@@ -12,7 +12,7 @@ import shutil
 import platform
 from argparse import ArgumentParser
 
-
+# options parser for username and password of the download
 parser = ArgumentParser(description='This script fetches the current version of SHELXT-2013 \
             and installs it into c:\\bn\\SXTL. The xt.exe is also updated')
 parser.add_argument("-u", dest="username", metavar='username', help="A user name is required \
@@ -36,8 +36,11 @@ passwd = options.password
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
+# we need to know if its 32 or 64 bit
 platform = platform.architecture()
 print 'Pulling '+platform[0]+' version'
+
+# decide which platform to use
 if platform[0] == '32bit':
     filename = "shelxt.exe"
 if platform[0] == '64bit':
@@ -48,9 +51,10 @@ fileurl = 'http://shelx.uni-ac.gwdg.de/shelxt-beta/'+filename
 top_level_url = 'http://shelx.uni-ac.gwdg.de/shelxt-beta/'
 installdir = 'c:\\bn\\sxtl\\'
 
-
 print "Installing in:", installdir
 
+
+# reports the downloaded chuncs to the screen
 def chunk_report(bytes_so_far, chunk_size, total_size):
    percent = float(bytes_so_far) / total_size
    percent = round(percent*100, 2)
@@ -89,7 +93,6 @@ password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
 # Add the username and password.
 # If we knew the realm, we could use it instead of None.
 password_mgr.add_password(None, top_level_url, username, passwd)
-
 handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 
 # create "opener" (OpenerDirector instance)
@@ -114,7 +117,6 @@ if __name__ == '__main__':
     localFile.write(the_file)
     localFile.close()
     
-    
     #make copys of the files with "Bruker names"
     shutil.copy(filename, installdir+'/shelxt.exe')
     shutil.copy(filename, installdir+'/xt.exe')
@@ -124,6 +126,3 @@ if __name__ == '__main__':
     os.chdir(actualpath)
     os.remove(filename) 
     
-        
-        
-        

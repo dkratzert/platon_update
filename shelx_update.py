@@ -12,7 +12,7 @@ import shutil
 import platform
 from argparse import ArgumentParser
 
-
+# options parser for username and password of the download
 parser = ArgumentParser(description='This script fetches the current version of SHELX-2013 \
             and installs it into c:\\bn\\SXTL. The x[l/d/s].exe and xcif.exe are also updated')
 parser.add_argument("-u", dest="username", metavar='username', help="A user name is required \
@@ -36,17 +36,18 @@ passwd = options.password
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
-filename = "install_shelx_win64.exe"
+# we need to know if its 32 or 64 bit
 platform = platform.architecture()
 platnumber = str(platform)[2:4]
-
-
 print 'Pulling '+platform[0]+' version'
+
+# decide which platform to use
 if platform[0] == '32bit':
     filename = "install_shelx_win32.exe"
 if platform[0] == '64bit':
     filename = "install_shelx_win64.exe"
 
+    
 fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'+filename
 top_level_url = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'
 installdir = 'c:\\bn\\sxtl\\'
@@ -54,6 +55,8 @@ installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx'+platnu
 
 print "Installing in:", installdir
 
+
+# reports the downloaded chuncs to the screen
 def chunk_report(bytes_so_far, chunk_size, total_size):
    percent = float(bytes_so_far) / total_size
    percent = round(percent*100, 2)
@@ -62,6 +65,7 @@ def chunk_report(bytes_so_far, chunk_size, total_size):
 
    if bytes_so_far >= total_size:
       sys.stdout.write('\n')
+
 
 def chunk_read(response, chunk_size=8192, report_hook=None):
    total_size = response.info().getheader('Content-Length').strip()
@@ -92,9 +96,7 @@ password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
 
 # Add the username and password.
 # If we knew the realm, we could use it instead of None.
-
 password_mgr.add_password(None, top_level_url, username, passwd)
-
 handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 
 # create "opener" (OpenerDirector instance)
@@ -109,12 +111,14 @@ urllib2.install_opener(opener)
 
 
 if __name__ == '__main__':
+    
+    #only download if the file is not already there
     if not os.path.isfile(filename):
         req = urllib2.Request(fileurl)
         response = urllib2.urlopen(req)
         the_file = chunk_read(response, report_hook=chunk_report)
 
-        #Save the file in the actual directory
+        #Save the downloaded file in the actual directory
         localFile = open(filename, 'wb')
         localFile.write(the_file)
         localFile.close()
@@ -144,7 +148,3 @@ if __name__ == '__main__':
     actualpath = sys.path[0]
     os.chdir(actualpath)
     os.remove(filename) 
-    
-        
-        
-        
