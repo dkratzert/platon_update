@@ -103,7 +103,15 @@ handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
 # use the opener to fetch a URL
-opener.open(fileurl)
+try:
+    opener.open(fileurl)
+except urllib2.HTTPError, e:
+    z = e
+    print
+    print z
+    print "Wrong username or password?"
+    sys.exit()
+   
 
 # Install the opener.
 # Now all calls to urllib2.urlopen use our opener.
@@ -115,8 +123,20 @@ if __name__ == '__main__':
     #only download if the file is not already there
     if not os.path.isfile(filename):
         req = urllib2.Request(fileurl)
-        response = urllib2.urlopen(req)
-        the_file = chunk_read(response, report_hook=chunk_report)
+        try:
+            response = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            z = e
+            print
+            print z
+            print "Wrong username or password?"
+            sys.exit()
+            
+        try:
+            the_file = chunk_read(response, report_hook=chunk_report)
+        except KeyboardInterrupt:
+            print "\naborted!"
+            sys.exit()
 
         #Save the downloaded file in the actual directory
         localFile = open(filename, 'wb')
