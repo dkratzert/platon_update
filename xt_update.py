@@ -22,7 +22,7 @@ opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 platform = platform.architecture()
-print platform[0]
+print 'Pulling '+platform[0]+' version'
 if platform[0] == '32bit':
     filename = "shelxt.exe"
 if platform[0] == '64bit':

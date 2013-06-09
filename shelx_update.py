@@ -23,7 +23,8 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 filename = "install_shelx_win64.exe"
 platform = platform.architecture()
-print platform[0]
+
+print 'Pulling '+platform[0]+' version'
 if platform[0] == '32bit':
     filename = "install_shelx_win32.exe"
 if platform[0] == '64bit':
