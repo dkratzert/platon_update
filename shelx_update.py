@@ -87,40 +87,40 @@ if __name__ == '__main__':
         response = urllib2.urlopen(req)
         the_file = chunk_read(response, report_hook=chunk_report)
 
-        # Just create a temporary file and dont keep it
-        #localFile = tempfile.TemporaryFile()
-        #localFile.write(the_file)
-        #localFile.close()
-        
-        print os.path.isfile(filename)
         #Save the file in the actual directory
         localFile = open(filename, 'wb')
         localFile.write(the_file)
         localFile.close()
-    else:
-        #/D destination
-        #/S silent
-        #params = '/S ' +' /D='+installdir  #This doesn't work
-        params = '/S'
-        print 'Installing with parameter: ' +params +'\n'
-        call([filename, params])
-        installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx64' 
-        
-        os.chdir(installpath)
-        os.remove('./Uninstall.exe')
-        for files in os.listdir("."):
-            if files.endswith(".exe"):
-                #print files
-                print 'Installing '+files +' in ' +installdir
-                shutil.copy(files, installdir)
-                
-        shutil.copy(installdir+'/shelxl.exe', installdir+'/xl.exe')
-        shutil.copy(installdir+'/shelxd.exe', installdir+'/xd.exe')
-        shutil.copy(installdir+'/shelxs.exe', installdir+'/xs.exe')
-        shutil.copy(installdir+'/ciftab.exe', installdir+'/xcif.exe')
-        
-        os.remove(filename) 
-        
+    
+    
+    #/D destination
+    #/S silent
+    #params = '/S ' +' /D='+installdir  #This doesn't work
+    params = '/S'
+    print 'Installing with parameter: ' +params +'\n'
+    call([filename, params])
+    installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx64' 
+    
+    os.chdir(installpath)
+    os.remove('./Uninstall.exe')
+    for files in os.listdir("."):
+        if files.endswith(".exe"):
+            #print files
+            print 'Installing '+files +' in ' +installdir
+            shutil.copy(files, installdir)
+            os.remove(files)
+    
+    #make copys of the files with "Bruker names"
+    shutil.copy(installdir+'/shelxl.exe', installdir+'/xl.exe')
+    shutil.copy(installdir+'/shelxd.exe', installdir+'/xd.exe')
+    shutil.copy(installdir+'/shelxs.exe', installdir+'/xs.exe')
+    shutil.copy(installdir+'/ciftab.exe', installdir+'/xcif.exe')
+    
+    # Cleaning up
+    actualpath = sys.path[0]
+    os.chdir(actualpath)
+    os.remove(filename) 
+    
         
         
         
