@@ -35,6 +35,7 @@ def chunk_read(response, chunk_size=8192, report_hook=None):
    total_size = response.info().getheader('Content-Length').strip()
    total_size = int(total_size)
    bytes_so_far = 0
+   data = []
 
    while 1:
       chunk = response.read(chunk_size)
@@ -43,10 +44,11 @@ def chunk_read(response, chunk_size=8192, report_hook=None):
       if not chunk:
          break
 
+      data += chunk
       if report_hook:
          report_hook(bytes_so_far, chunk_size, total_size)
 
-   return bytes_so_far
+   return "".join(data)
 
 
    response = urllib2.urlopen('http://www.ebay.com');
