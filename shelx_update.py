@@ -9,6 +9,8 @@ import os
 import sys
 import tempfile
 import zipfile
+from subprocess import call
+
 
 username = sys.argv[1]
 passwd = sys.argv[2]
@@ -21,6 +23,10 @@ filename = "install_shelx_win64.exe"
 fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/install_shelx_win64.exe'
 #fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/linux/shelxl.bz2'
 
+installdir = 'c:\\bn\\sxtl'
+#installdir = tempfile.gettempdir()  #for installing in tempdir
+
+print "Installing in:", installdir
 
 def chunk_report(bytes_so_far, chunk_size, total_size):
    percent = float(bytes_so_far) / total_size
@@ -78,14 +84,26 @@ urllib2.install_opener(opener)
 #print "test"
 
 if __name__ == '__main__':
-    req = urllib2.Request(fileurl)
-    response = urllib2.urlopen(req)
-    #the_file = response.read()
-    the_file = chunk_read(response, report_hook=chunk_report)
+    if not os.path.isfile(filename):
+        req = urllib2.Request(fileurl)
+        response = urllib2.urlopen(req)
+        #the_file = response.read()
+        the_file = chunk_read(response, report_hook=chunk_report)
 
-    # Just create a temporary file and dont keep it
-    #localFile = tempfile.TemporaryFile()
-    #localFile.write(the_file)
-
-    localFile = open(filename, 'wb')
-    localFile.write(the_file)
+        # Just create a temporary file and dont keep it
+        #localFile = tempfile.TemporaryFile()
+        #localFile.write(the_file)
+        print os.path.isfile(filename)
+        #localFile = open(filename, 'wb')
+        # localFile.write(the_file)
+        #localFile.close()
+    else:
+        #/D destination
+        #/S silent
+        #execute(filename /D=installdir /S)
+    
+        params = '/S ' +'/D='+installdir
+        #params = '/S'
+        print params
+        call([filename, params])
+    
