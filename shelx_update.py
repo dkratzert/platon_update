@@ -23,6 +23,8 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 filename = "install_shelx_win64.exe"
 platform = platform.architecture()
+platnumber = str(platform)[2:4]
+
 
 print 'Pulling '+platform[0]+' version'
 if platform[0] == '32bit':
@@ -33,6 +35,7 @@ if platform[0] == '64bit':
 fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'+filename
 top_level_url = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'
 installdir = 'c:\\bn\\sxtl\\'
+installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx'+platnumber
 
 print "Installing in:", installdir
 
@@ -101,16 +104,14 @@ if __name__ == '__main__':
         localFile.write(the_file)
         localFile.close()
     
-    
     #/D destination   #/S silent
     #params = '/S ' +' /D='+installdir  #This doesn't work
     params = '/S'
     print 'Installing with parameter: ' +params +'\n'
     call([filename, params])
-    installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx64' 
-    
     os.chdir(installpath)
     os.remove('./Uninstall.exe')
+    
     for files in os.listdir("."):
         if files.endswith(".exe"):
             #print files
