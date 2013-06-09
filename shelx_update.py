@@ -10,6 +10,8 @@ import sys
 import tempfile
 import zipfile
 from subprocess import call
+import getpass
+import shutil
 
 
 username = sys.argv[1]
@@ -21,10 +23,7 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 filename = "install_shelx_win64.exe"
 fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/install_shelx_win64.exe'
-#fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/linux/shelxl.bz2'
-
-installdir = 'c:\\bn\\sxtl'
-#installdir = tempfile.gettempdir()  #for installing in tempdir
+installdir = 'c:\\bn\\sxtl\\'
 
 print "Installing in:", installdir
 
@@ -81,29 +80,47 @@ opener.open(fileurl)
 # Now all calls to urllib2.urlopen use our opener.
 urllib2.install_opener(opener)
 
-#print "test"
 
 if __name__ == '__main__':
     if not os.path.isfile(filename):
         req = urllib2.Request(fileurl)
         response = urllib2.urlopen(req)
-        #the_file = response.read()
         the_file = chunk_read(response, report_hook=chunk_report)
 
         # Just create a temporary file and dont keep it
         #localFile = tempfile.TemporaryFile()
         #localFile.write(the_file)
-        print os.path.isfile(filename)
-        #localFile = open(filename, 'wb')
-        # localFile.write(the_file)
         #localFile.close()
+        
+        print os.path.isfile(filename)
+        #Save the file in the actual directory
+        localFile = open(filename, 'wb')
+        localFile.write(the_file)
+        localFile.close()
     else:
         #/D destination
         #/S silent
-        #execute(filename /D=installdir /S)
-    
-        params = '/S ' +'/D='+installdir
-        #params = '/S'
-        print params
+        #params = '/S ' +' /D='+installdir  #This doesn't work
+        params = '/S'
+        print 'Installing with parameter: ' +params +'\n'
         call([filename, params])
-    
+        installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx64' 
+        
+        os.chdir(installpath)
+        os.remove('./Uninstall.exe')
+        for files in os.listdir("."):
+            if files.endswith(".exe"):
+                #print files
+                print 'Installing '+files +' in ' +installdir
+                shutil.copy(files, installdir)
+                
+        shutil.copy(installdir+'/shelxl.exe', installdir+'/xl.exe')
+        shutil.copy(installdir+'/shelxd.exe', installdir+'/xd.exe')
+        shutil.copy(installdir+'/shelxs.exe', installdir+'/xs.exe')
+        shutil.copy(installdir+'/ciftab.exe', installdir+'/xcif.exe')
+        
+        os.remove(filename) 
+        
+        
+        
+        
