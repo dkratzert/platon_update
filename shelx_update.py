@@ -12,7 +12,7 @@ import zipfile
 from subprocess import call
 import getpass
 import shutil
-
+import platform
 
 username = sys.argv[1]
 passwd = sys.argv[2]
