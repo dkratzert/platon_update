@@ -4,20 +4,16 @@
 # this script updates the shelx-2013 in the c:\bn\sxtl directory
 
 import urllib2
-import time
 import os
 import sys
-import tempfile
-import zipfile
 from subprocess import call
 import getpass
 import shutil
 import platform
-
-
 from argparse import ArgumentParser
 
-parser = ArgumentParser(description='This script fetches the current version of shelxl-2013 \
+
+parser = ArgumentParser(description='This script fetches the current version of SHELX-2013 \
             and installs it into c:\\bn\\SXTL. The x[l/d/s].exe and xcif.exe are also updated')
 parser.add_argument("-u", dest="username", metavar='username', help="A user name is required \
             to download SHELX-2013")
@@ -36,7 +32,6 @@ elif options.password is None:
 
 username = options.username
 passwd = options.password
-timestr = time.strftime("%Y%m%d")
 
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
