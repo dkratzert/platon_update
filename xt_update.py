@@ -12,7 +12,7 @@ import zipfile
 from subprocess import call
 import getpass
 import shutil
-
+import platform
 
 username = sys.argv[1]
 passwd = sys.argv[2]
@@ -21,17 +21,18 @@ timestr = time.strftime("%Y%m%d")
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
-filename = "install_shelx_win64.exe"
 platform = platform.architecture()
 print platform[0]
 if platform[0] == '32bit':
-    filename = "install_shelx_win32.exe"
+    filename = "shelxt.exe"
 if platform[0] == '64bit':
-    filename = "install_shelx_win64.exe"
+    filename = "shelxt64.exe"
 
-fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'+filename
-top_level_url = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'
+
+fileurl = 'http://shelx.uni-ac.gwdg.de/shelxt-beta/'+filename
+top_level_url = 'http://shelx.uni-ac.gwdg.de/shelxt-beta/'
 installdir = 'c:\\bn\\sxtl\\'
+
 
 print "Installing in:", installdir
 
@@ -66,14 +67,12 @@ def chunk_read(response, chunk_size=8192, report_hook=None):
    response = urllib2.urlopen(top_level_url);
    chunk_read(response, report_hook=chunk_report)
 
-   
 
 # create a password manager
 password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
 
 # Add the username and password.
 # If we knew the realm, we could use it instead of None.
-
 password_mgr.add_password(None, top_level_url, username, passwd)
 
 handler = urllib2.HTTPBasicAuthHandler(password_mgr)
@@ -90,38 +89,20 @@ urllib2.install_opener(opener)
 
 
 if __name__ == '__main__':
-    if not os.path.isfile(filename):
-        req = urllib2.Request(fileurl)
-        response = urllib2.urlopen(req)
-        the_file = chunk_read(response, report_hook=chunk_report)
-
-        #Save the file in the actual directory
-        localFile = open(filename, 'wb')
-        localFile.write(the_file)
-        localFile.close()
     
+    req = urllib2.Request(fileurl)
+    response = urllib2.urlopen(req)
+    the_file = chunk_read(response, report_hook=chunk_report)
     
-    #/D destination   #/S silent
-    #params = '/S ' +' /D='+installdir  #This doesn't work
-    params = '/S'
-    print 'Installing with parameter: ' +params +'\n'
-    call([filename, params])
-    installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx64' 
+    #Save the file in the actual directory
+    localFile = open(filename, 'wb')
+    localFile.write(the_file)
+    localFile.close()
     
-    os.chdir(installpath)
-    os.remove('./Uninstall.exe')
-    for files in os.listdir("."):
-        if files.endswith(".exe"):
-            #print files
-            print 'Installing '+files +' in ' +installdir
-            shutil.copy(files, installdir)
-            os.remove(files)
     
     #make copys of the files with "Bruker names"
-    shutil.copy(installdir+'/shelxl.exe', installdir+'/xl.exe')
-    shutil.copy(installdir+'/shelxd.exe', installdir+'/xd.exe')
-    shutil.copy(installdir+'/shelxs.exe', installdir+'/xs.exe')
-    shutil.copy(installdir+'/ciftab.exe', installdir+'/xcif.exe')
+    shutil.copy(filename, installdir+'/shelxt.exe')
+    shutil.copy(filename, installdir+'/xt.exe')
     
     # Cleaning up
     actualpath = sys.path[0]
