@@ -14,8 +14,28 @@ import getpass
 import shutil
 import platform
 
-username = sys.argv[1]
-passwd = sys.argv[2]
+
+from argparse import ArgumentParser
+
+parser = ArgumentParser(description='This script fetches the current version of shelxl-2013 \
+            and installs it into c:\\bn\\SXTL. The x[l/d/s].exe and xcif.exe are also updated')
+parser.add_argument("-u", dest="username", metavar='username', help="A user name is required \
+            to download SHELX-2013")
+parser.add_argument("-p", dest="password", metavar='password', help="A password is required \
+            to download SHELX-2013")
+options = parser.parse_args()
+
+if options.username is None:
+	print "\nPlease give the user name as argument!\n"
+	parser.print_help()
+	sys.exit(-1)
+elif options.password is None:
+	print "\nPlease give the password as argument!\n"
+	parser.print_help()
+	sys.exit(-1)
+
+username = options.username
+passwd = options.password
 timestr = time.strftime("%Y%m%d")
 
 opener = urllib2.build_opener()
