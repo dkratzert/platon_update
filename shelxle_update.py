@@ -26,6 +26,7 @@ winshelx_setup-1.0.'+version+'.exe/download'
 #Writing standard install directory to registry
 #C:\Program Files\shelxle
 aReg = ConnectRegistry(None,HKEY_CURRENT_USER)
+CreateKey(aReg, "Software\shelxle")
 aKey = OpenKey(aReg, r"Software\shelxle", 0, KEY_WRITE)
 SetValueEx(aKey,"",0, REG_SZ, r"C:\Program Files\shelxle")
 
@@ -33,7 +34,7 @@ SetValueEx(aKey,"",0, REG_SZ, r"C:\Program Files\shelxle")
 # reports the downloaded chuncs to the screen
 def chunk_report(bytes_so_far, chunk_size, total_size):
     percent = float(bytes_so_far) / total_size
-    percent = round(percent*100, 1)
+    percent = round(percent*100, 2)
     sys.stdout.write("Downloaded %d of %d bytes (%0.2f%%)\r" %
         (bytes_so_far, total_size, percent))
     
@@ -68,21 +69,23 @@ print 'Downloading revision '+revision()+'\n'
 req = urllib2.Request(url)
 response = urllib2.urlopen(req)
 
-#download the file   
-#try:
-#    #Save the file in the actual directory
-#    the_file = chunk_read(response, report_hook=chunk_report)
-#    localFile = open(file, 'wb')
-#    localFile.write(the_file)
-#    localFile.close()
-#except KeyboardInterrupt:
-#    print "\naborted!"
-#    sys.exit()
+##download the file   
+try:
+    #Save the file in the actual directory
+    the_file = chunk_read(response, report_hook=chunk_report)
+    localFile = open(file, 'wb')
+    localFile.write(the_file)
+    localFile.close()
+except KeyboardInterrupt:
+    print "\naborted!"
+    sys.exit()
 
- 
+
 # Installing
 print 'Installing with parameter: ' +params +'\n'
 # we need this for the UAC to elevate the user previleges
 shell.ShellExecuteEx(lpVerb='runas', lpFile=file, lpParameters=params)
 #cleaning up
-os.remove(file) 
+
+#how can I make shure that the file is not open any more?
+#os.remove(file)
