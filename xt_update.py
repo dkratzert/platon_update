@@ -37,13 +37,19 @@ opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # we need to know if its 32 or 64 bit
-platform = platform.architecture()
-print 'Pulling '+platform[0]+' version'
+try:
+    os.environ["PROGRAMFILES(X86)"]
+    platnumber = str(64)
+except:
+    platnumber = str(32)
+print 'Pulling '+platnumber+'bit version'
+
+platform = platnumber+'bit'
 
 # decide which platform to use
-if platform[0] == '32bit':
+if platform == '32bit':
     filename = "shelxt.exe"
-if platform[0] == '64bit':
+if platform == '64bit':
     filename = "shelxt64.exe"
 
 
