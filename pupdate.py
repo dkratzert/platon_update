@@ -5,59 +5,35 @@
 
 import urllib2
 import os
+import sys
 import tempfile
 import zipfile
 from HTMLParser import HTMLParser
-from re import sub
-from sys import stderr
-from traceback import print_exc
 
-class _DeHTMLParser(HTMLParser):
+
+# fetch the changes of platon and store it in one string (text)
+html = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/update_history_platon.html')
+text = [html.next() for x in range(15)]
+text = "".join(text)
+
+#strips down the html to plain text
+class MLStripper(HTMLParser):
     def __init__(self):
-        HTMLParser.__init__(self)
-        self.__text = []
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
-    def handle_data(self, data):
-        text = data.strip()
-        if len(text) > 0:
-            text = sub('[ \t\r\n]+', ' ', text)
-            self.__text.append(text + ' ')
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
-    def handle_starttag(self, tag, attrs):
-        if tag == 'p':
-            self.__text.append('\n\n')
-        elif tag == 'br':
-            self.__text.append('\n')
-
-    def handle_startendtag(self, tag, attrs):
-        if tag == 'br':
-            self.__text.append('\n\n')
-
-    def text(self):
-        return ''.join(self.__text).strip()
-
-
-def dehtml(text):
-    try:
-        parser = _DeHTMLParser()
-        parser.feed(text)
-        parser.close()
-        return parser.text()
-    except:
-        print_exc(file=stderr)
-        return text
-
-
-def main():
-    html = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/update_history_platon.html')
-    text = tempfile.TemporaryFile()
-    text.write(html.read())
-    text.close()
-    print(dehtml(text))
-
-
-main()
-
+print strip_tags(text)    
+    
+sys.exit()
 u = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/mswindows/platon/platon.zip')
 
 #create a temporary file and download platon to it.
