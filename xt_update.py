@@ -6,7 +6,6 @@
 import urllib2
 import os
 import sys
-from subprocess import call
 import getpass
 import shutil
 import platform
