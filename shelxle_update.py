@@ -7,7 +7,9 @@ import os
 import sys
 import urllib2
 from _winreg import *
-import shutil
+import select
+import time
+import subprocess
 import win32com.shell.shell as shell
 
 revurl = 'http://ewald.ac.chemie.uni-goettingen.de/shelx/revision.php'
@@ -70,22 +72,34 @@ req = urllib2.Request(url)
 response = urllib2.urlopen(req)
 
 ##download the file   
-try:
-    #Save the file in the actual directory
-    the_file = chunk_read(response, report_hook=chunk_report)
-    localFile = open(file, 'wb')
-    localFile.write(the_file)
-    localFile.close()
-except KeyboardInterrupt:
-    print "\naborted!"
-    sys.exit()
+#try:
+#    #Save the file in the actual directory
+#    the_file = chunk_read(response, report_hook=chunk_report)
+#    localFile = open(file, 'wb')
+#    localFile.write(the_file)
+#    localFile.close()
+#except KeyboardInterrupt:
+#    print "\naborted!"
+#    sys.exit()
 
 
 # Installing
 print 'Installing with parameter: ' +params +'\n'
 # we need this for the UAC to elevate the user previleges
 shell.ShellExecuteEx(lpVerb='runas', lpFile=file, lpParameters=params)
-#cleaning up
 
-#how can I make shure that the file is not open any more?
-#os.remove(file)
+
+#tries to open the installfile until subprocess is finished
+try:
+    open(file, 'w')
+except:
+    fopen = 1 
+    while fopen == 1:
+        time.sleep(1)
+        try:
+            open(file, 'w')
+            fopen = 0
+        except:
+            fopen = 1
+#cleaning up
+os.remove(file)
