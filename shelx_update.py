@@ -11,7 +11,7 @@ import getpass
 import shutil
 import platform
 from argparse import ArgumentParser
-import _winreg
+from _winreg import *
 
 # options parser for username and password of the download
 parser = ArgumentParser(description='This script fetches the current version of SHELX-2013 \
@@ -33,7 +33,7 @@ elif options.password is None:
 
 username = options.username
 passwd = options.password
-
+key = ''
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
@@ -54,13 +54,18 @@ if platform == '32bit':
 if platform == '64bit':
     filename = "install_shelx_win64.exe"
 
-aReg = ConnectRegistry(None,HKEY_CURRENT_USER)
-aKey = OpenKey(aReg, r"HKEY_CURRENT_USER\Software\shelx64") 
-key = EnumValue(aKey)
-CloseKey(aKey)    
+# determine the installation path
+try:
+    aReg = ConnectRegistry(None,HKEY_CURRENT_USER)
+    aKey = OpenKey(aReg, r"Software\shelx64") 
+    key = EnumValue(aKey,0)[1]
+    if key:
+        DeleteKey(HKEY_CURRENT_USER, r'Software\shelx64')
+    CloseKey(aKey)
+except:
+    pass
 
-print key
-sys.exit()
+#sys.exit()
 
 fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'+filename
 top_level_url = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'
