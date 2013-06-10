@@ -54,7 +54,15 @@ if platform == '32bit':
 if platform == '64bit':
     filename = "install_shelx_win64.exe"
 
-# determine the installation path
+fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'+filename
+top_level_url = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'
+installdir = 'c:\\bn\\sxtl\\'
+installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx'+platnumber
+
+print "Installing in:", installdir
+
+
+# delete the previous installation path from the registry
 try:
     aReg = ConnectRegistry(None,HKEY_CURRENT_USER)
     aKey = OpenKey(aReg, r"Software\shelx64") 
@@ -66,13 +74,6 @@ except:
     pass
 
 #sys.exit()
-
-fileurl = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'+filename
-top_level_url = 'http://shelx.uni-ac.gwdg.de/~gsheldr/bin/'
-installdir = 'c:\\bn\\sxtl\\'
-installpath = 'C:\\Users\\' +getpass.getuser() +'\\AppData\\Local\\shelx'+platnumber
-
-print "Installing in:", installdir
 
 
 # reports the downloaded chuncs to the screen
