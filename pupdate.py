@@ -9,11 +9,12 @@ import sys
 import tempfile
 import zipfile
 from HTMLParser import HTMLParser
+import datetime
 
 
 # fetch the changes of platon and store it in one string (text)
 html = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/update_history_platon.html')
-text = [html.next() for x in range(15)]
+text = [html.next() for x in range(18)]
 text = "".join(text)
 
 #strips down the html to plain text
@@ -22,7 +23,7 @@ class MLStripper(HTMLParser):
         self.reset()
         self.fed = []
     def handle_data(self, d):
-        self.fed.append(d)
+        self.fed.append(d.rstrip('\n'))
     def get_data(self):
         return ''.join(self.fed)
 
@@ -31,9 +32,12 @@ def strip_tags(html):
     s.feed(html)
     return s.get_data()
 
+today = datetime.date.today()
+print "\nToday is: " +str(today.strftime('%b %d, %Y\n'))
 print strip_tags(text)    
     
-sys.exit()
+
+# now preceed with platon update
 u = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/mswindows/platon/platon.zip')
 
 #create a temporary file and download platon to it.
