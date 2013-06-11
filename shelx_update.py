@@ -165,6 +165,7 @@ if __name__ == '__main__':
     
     #/D destination   #/S silent
     #params = '/S ' +' /D='+installdir  #This doesn't work
+    #might be a couse of user priviliges?
     params = '/S'
     print 'Installing with parameter: ' +params +'\n'
     call([filename, params])
