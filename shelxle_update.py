@@ -10,7 +10,7 @@ from _winreg import *
 import select
 import time
 import subprocess
-import win32com.shell.shell as shell
+import win32com.shell.shell as shell #we need the Python Win32 Extensions for that
 
 revurl = 'http://ewald.ac.chemie.uni-goettingen.de/shelx/revision.php'
 params = '/S'
@@ -72,22 +72,28 @@ req = urllib2.Request(url)
 response = urllib2.urlopen(req)
 
 ##download the file   
-#try:
-#    #Save the file in the actual directory
-#    the_file = chunk_read(response, report_hook=chunk_report)
-#    localFile = open(file, 'wb')
-#    localFile.write(the_file)
-#    localFile.close()
-#except KeyboardInterrupt:
-#    print "\naborted!"
-#    sys.exit()
+def download(file, response):
+    try:
+        #Save the file in the actual directory
+        the_file = chunk_read(response, report_hook=chunk_report)
+        localFile = open(file, 'wb')
+        localFile.write(the_file)
+        localFile.close()
+    except KeyboardInterrupt:
+        print "\naborted!"
+        sys.exit()
 
+        
+download(file, response)   
 
 # Installing
 print 'Installing with parameter: ' +params +'\n'
 # we need this for the UAC to elevate the user previleges
-shell.ShellExecuteEx(lpVerb='runas', lpFile=file, lpParameters=params)
-
+try:
+    shell.ShellExecuteEx(lpVerb='runas', lpFile=file, lpParameters=params)
+except:
+    print "unable to execute install file!"
+    sys.exit()
 
 #tries to open the installfile until subprocess is finished
 try:
@@ -102,4 +108,9 @@ except:
         except:
             fopen = 1
 #cleaning up
-os.remove(file)
+try:
+    os.remove(file)
+except:
+    print "Unable to delete install file"
+finally:
+    print "Successfully installed ShelXle!"
