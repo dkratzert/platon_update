@@ -169,9 +169,12 @@ if __name__ == '__main__':
     params = '/S'
     print 'Installing with parameter: ' +params +'\n'
     call([filename, params])
+    
+    #Installing
     os.chdir(installpath)
     os.remove('./Uninstall.exe')
     
+    # copy .exe files to final directory
     for files in os.listdir("."):
         if files.endswith(".exe"):
             #print files

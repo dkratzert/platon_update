@@ -130,7 +130,12 @@ if __name__ == '__main__':
         sys.exit()
     
     #Save the file in the actual directory
-    localFile = open(filename, 'wb')
+    try:
+        localFile = open(filename, 'wb')
+    except:
+        print 'you need to have write permission in the current diretory!'
+        sys.exit()
+        
     localFile.write(the_file)
     localFile.close()
     
