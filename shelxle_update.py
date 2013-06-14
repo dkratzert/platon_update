@@ -11,6 +11,7 @@ import select
 import time
 import subprocess
 import win32com.shell.shell as shell #we need the Python Win32 Extensions for that
+                                     #comment out for .exe
 
 revurl = 'http://ewald.ac.chemie.uni-goettingen.de/shelx/revision.php'
 params = '/S'
@@ -90,6 +91,7 @@ download(file, response)
 print 'Installing with parameter: ' +params +'\n'
 # we need this for the UAC to elevate the user previleges
 try:
+    #subprocess.call([file, params])  #for .exe instead of:
     shell.ShellExecuteEx(lpVerb='runas', lpFile=file, lpParameters=params)
 except:
     print "unable to execute install file!"
