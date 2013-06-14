@@ -6,6 +6,7 @@
 import urllib2
 import os
 import sys
+import time
 import tempfile
 import zipfile
 from HTMLParser import HTMLParser
@@ -58,3 +59,4 @@ for name in list:
 	fd.close()
 
 localFile.close()
+time.sleep(8)
