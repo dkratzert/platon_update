@@ -51,12 +51,23 @@ zf = zipfile.ZipFile(localFile, 'r')
 #list of files in the zipfile
 list = zf.namelist()  
 
+# if not already present - create the platon directory:
+dir = os.path.exists('c:\\pwt')
+if not dir:
+    try:
+        os.mkdir('c:\\pwt')
+    except IOError:
+        print "unable to create install directory"
+        sys.exit()
+    else:
+        print 'created platon directory c:\\pwt'
+        pass
 # extract the files to the platon directory
 for name in list:
-	fd = open('c:/pwt/'+name, "wb")
-	fd.write(zf.read(name))
-	print 'extracting', name
-	fd.close()
+    fd = open('c:/pwt/'+name, "wb")
+    fd.write(zf.read(name))
+    print 'extracting', name
+    fd.close()
 
 localFile.close()
 time.sleep(8)
