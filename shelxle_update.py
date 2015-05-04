@@ -5,24 +5,26 @@
 
 import os
 import sys
-import urllib.request, urllib.error, urllib.parse
-from winreg import *
+import urllib2
+from _winreg import *
 import select
 import time
 import subprocess
 import win32com.shell.shell as shell #we need the Python Win32 Extensions for that
+                                     #comment out for .exe
 
 revurl = 'http://ewald.ac.chemie.uni-goettingen.de/shelx/revision.php'
 params = '/S'
     
 def revision():
-    response = urllib.request.urlopen(revurl)
+    response = urllib2.urlopen(revurl)
     rev = response.read()
     return rev
 
 version = revision()
 file = "shelxle.exe"
-url = 'http://sourceforge.net/projects/shelxle/files/windows/winshelx_setup-1.0.{}.exe/download'.format(str(version))
+url = 'http://sourceforge.net/projects/shelxle/files/windows/\
+winshelx_setup-1.0.'+version+'.exe/download'
 
 #Writing standard install directory to registry
 #C:\Program Files\shelxle
@@ -62,13 +64,13 @@ def chunk_read(response, chunk_size=8192, report_hook=None):
     
     return "".join(data)
     
-    response = urllib.request.urlopen(url);
+    response = urllib2.urlopen(url);
     chunk_read(response, report_hook=chunk_report)
 
-print(('Downloading revision {}\n'.format(str(revision()))))
+print 'Downloading revision '+revision()+'\n'
 
-req = urllib.request.Request(url)
-response = urllib.request.urlopen(req)
+req = urllib2.Request(url)
+response = urllib2.urlopen(req)
 
 ##download the file   
 def download(file, response):
@@ -79,19 +81,20 @@ def download(file, response):
         localFile.write(the_file)
         localFile.close()
     except KeyboardInterrupt:
-        print("\naborted!")
+        print "\naborted!"
         sys.exit()
 
         
 download(file, response)   
 
 # Installing
-+print(('Installing with parameter: ' +params +'\n'))
+print 'Installing with parameter: ' +params +'\n'
 # we need this for the UAC to elevate the user previleges
 try:
+    #subprocess.call([file, params])  #for .exe instead of:
     shell.ShellExecuteEx(lpVerb='runas', lpFile=file, lpParameters=params)
 except:
-    print("unable to execute install file!")
+    print "unable to execute install file!"
     sys.exit()
 
 #tries to open the installfile until subprocess is finished
@@ -110,6 +113,6 @@ except:
 try:
     os.remove(file)
 except:
-    print("Unable to delete install file")
+    print "Unable to delete install file"
 finally:
-    print("Successfully installed ShelXle!")
+    print "Successfully installed ShelXle!"
