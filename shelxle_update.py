@@ -18,13 +18,11 @@ params = '/S'
 def revision():
     response = urllib.request.urlopen(revurl)
     rev = response.read()
-    rev = rev.decode('ascii')
     return rev
 
 version = revision()
-version = 676
 file = "shelxle.exe"
-url = 'http://sourceforge.net/projects/shelxle/files/windows/winshelx_setup-1.0.{}.exe/download'.format(version)
+url = 'http://sourceforge.net/projects/shelxle/files/windows/winshelx_setup-1.0.{}.exe/download'.format(str(version))
 
 #Writing standard install directory to registry
 #C:\Program Files\shelxle
@@ -46,7 +44,7 @@ def chunk_report(bytes_so_far, chunk_size, total_size):
 
         
 def chunk_read(response, chunk_size=8192, report_hook=None):
-    total_size = response.info().get('Content-Length').strip()
+    total_size = response.info().getheader('Content-Length').strip()
     total_size = int(total_size)
     bytes_so_far = 0
     data = []
@@ -62,7 +60,7 @@ def chunk_read(response, chunk_size=8192, report_hook=None):
         if report_hook:
             report_hook(bytes_so_far, chunk_size, total_size)
     
-    return "".join(str(data))
+    return "".join(data)
     
     response = urllib.request.urlopen(url);
     chunk_read(response, report_hook=chunk_report)
@@ -72,14 +70,13 @@ print(('Downloading revision {}\n'.format(str(revision()))))
 req = urllib.request.Request(url)
 response = urllib.request.urlopen(req)
 
-
 ##download the file   
 def download(file, response):
     try:
         #Save the file in the actual directory
-        #the_file = chunk_read(response, report_hook=chunk_report)
+        the_file = chunk_read(response, report_hook=chunk_report)
         localFile = open(file, 'wb')
-        localFile.write(response.read())
+        localFile.write(the_file)
         localFile.close()
     except KeyboardInterrupt:
         print("\naborted!")
@@ -89,7 +86,7 @@ def download(file, response):
 download(file, response)   
 
 # Installing
-print(('Installing with parameter: {}\n'.format(str(params))))
++print(('Installing with parameter: ' +params +'\n'))
 # we need this for the UAC to elevate the user previleges
 try:
     shell.ShellExecuteEx(lpVerb='runas', lpFile=file, lpParameters=params)
