@@ -14,7 +14,7 @@ import datetime
 
 
 # fetch the changes of platon and store it in one string (text)
-html = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/update_history_platon.html')
+html = urllib2.urlopen('http://www.platonsoft.nl/spek/xraysoft/update_history_platon.html')
 text = [html.next() for x in range(18)]
 text = "".join(text)
 
@@ -39,7 +39,7 @@ print strip_tags(text)
     
 
 # now preceed with platon update
-u = urllib2.urlopen('http://www.cryst.chem.uu.nl/spek/xraysoft/mswindows/platon/platon.zip')
+u = urllib2.urlopen('http://www.platonsoft.nl/spek/xraysoft/mswindows/platon/platon.zip')
 
 #create a temporary file and download platon to it.
 localFile = tempfile.TemporaryFile()
