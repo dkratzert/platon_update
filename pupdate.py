@@ -37,11 +37,14 @@ else:
 #strips down the html to plain text
 class MLStripper(HTMLParser):
     def __init__(self):
-        super().__init__()
+        if pyver == 3:
+            super().__init__()
         self.reset()
         self.fed = []
+        
     def handle_data(self, d):
         self.fed.append(d.rstrip('\n'))
+        
     def get_data(self):
         return ''.join(self.fed)
 
